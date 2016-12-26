@@ -28,6 +28,8 @@
     template += '<button class="btn-large btnd" type="submit">&nbsp;&nbsp;Enviar&nbsp;&nbsp;</button></div></div>';
 
     formularioContacto.append(template);
+    //Nos aseguramos de reiniciar los labels por si se está editando el formulario
+    Materialize.updateTextFields();
 
     //Enviamos el formulario vía ajax
     formularioContacto.submit(function (e) {
@@ -51,12 +53,14 @@
                 //Ocultamos el mensaje de envío de datos
                 loader.hide('fast');
                 //Si hay errores, envíamos mensaje de info y mostramos el formulario
+                console.log(request.getResponseHeader('exito'));
                 if (request.getResponseHeader('exito') == null) {
                     Materialize.toast('Por favor verifica tu información', 3000, 'mensaje-alerta');
                     modalContenido.html(data);
                     Materialize.updateTextFields();
                 } else {
                     //Aseguramos mostrar los datos más recientes y de ocultar el modal
+                    Materialize.toast('El contacto se ha guardado', 3000, 'mensaje-alerta');
                     bandeja.DataTable().ajax.reload();
                     bandeja.parent().show();
                     btnAgregarContacto.parent().show('fast');

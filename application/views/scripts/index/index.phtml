@@ -1,9 +1,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/datatables.min.css" />
 <script src="<?php echo $this->baseUrl(); ?>/js/datatables.min.js"></script>
 <div class="col s12 right-align" hidden>
-    <a  id="btnAgregarContacto" class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>
+    <a  id="btnAgregarContacto" class="waves-effect  btn btnd" href="#" onclick="edicionContacto();">¡Agregar contacto!</a>
     <br><br>
 </div>
+<!-- Tabla con la bandeja de contactos -->
 <div id="bandejaContactos" hidden>
    <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
       <thead>
@@ -14,6 +15,11 @@
          </tr>
       </thead>
    </table>
+</div>
+<!-- Mensaje para mostrar cuando la bandeja esté vacía -->
+<div class="center-align" id="mensajeSinContactos" hidden>
+    <p>No hay contactos registrados</p>
+    <a class="waves-effect  btn btnd" href="#" onclick="edicionContacto();">¡Agregar contacto!</a>
 </div>
 <br>
 <!-- Modal Structure -->
@@ -27,6 +33,8 @@
     //Obtenemos los datos del modal
     var modal = $('#modal');
     var modalContenido = $('#modalContenido');
+    //Obtenemos la bandeja de contactos
+    var bandeja = $('#bandeja');
 
     /**
      * Función que muestra en un modal  los datos de un contacto
@@ -50,16 +58,63 @@
     }
 
     /**
-     * Función que genera el formulario para guardar un nuevo contacto
+     * Función que muestra el mensaje de eliminar contacto
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @param {contactoId} id del contacto a eliminar
+     * @param {contactoNombres} nombre del contacto a eliminar
+     * @return void
+     */
+    function mostrarEliminarContacto(contactoId = null, contactoNombres = null){
+        var html = '<h3 class="titulo-seccion"> Eliminar contacto </h3>';
+        html += '<div class="center-align"><p>¿Está seguro de querer eliminar el contacto <b>'+contactoNombres+'</b>?</p></div>';
+        //Generamos los botones de enviar y cancelar para el formulario
+        var template = '<div class="row"><div class="input-field col s6 right-align">';
+        template += '<a onclick="modal.modal(\'close\');" class="btn-large btnd btnc">Cancelar</a></div>';
+        template += '<div class="input-field col s6 lef-align">';
+        template += '<a class="btn-large btnd" onclick="eliminarContacto('+contactoId+');">&nbsp;&nbsp;Eliminar&nbsp;&nbsp;</button></div></div>';
+        html += template;
+        modalContenido.html(html);
+        modal.modal('open');
+    }
+
+    /**
+     * Función que elimina un contacto
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @param {contactoId} id del contacto a eliminar
+     * @return void
+     */
+    function eliminarContacto(contactoId = null){
+        var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'eliminar-contacto')) ?>";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { contactoId:contactoId },
+            success: function(data, textStatus, request) {
+                if (request.getResponseHeader('exito') == true) {
+                    Materialize.toast('Contacto eliminado', 3000, 'mensaje-alerta');
+                    bandeja.DataTable().ajax.reload();
+                } else {
+                    Materialize.toast('Ha ocurrido un error, inténtelo de nuevo', 3000, 'mensaje-alerta');
+                }
+                modal.modal('close');
+            }
+        });
+    }
+
+    /**
+     * Función que genera el formulario para guardar/editar un contacto
      *
      * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
      * @return void
      */
-    function agregarContacto(){
+    function edicionContacto(contactoId = null){
         var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'edicion-contacto')) ?>";
         $.ajax({
             url: url,
             type: 'POST',
+            data: (contactoId != null)?{contactoId:contactoId}:{},
             success: function(data, textStatus, request) {
                 modalContenido.html(data);
                 modal.modal('open');
@@ -73,17 +128,16 @@
     $(document).ready(function() {
     	//Variables globales
     	var html = '';
-    	var bandeja = $('#bandeja');
         var contenedorBandeja = $('#bandejaContactos');
         var btnAgregarContacto = $('#btnAgregarContacto');
-    	//Generamos un template para las imágenes
-    	var template = '<a href="<?php echo $this->baseUrl(); ?>{index}" data-lightbox="mosaico" data-title="{nombre}">';
-    	template += '<img class="responsive-img img-mosaico" alt="Cargando Gif" src="<?php $this->baseUrl(); ?>{index}" style="width:120px;">';
-    	template += '</a>';
-    	//Generamos los tags de las columnas de acciones
+        var mensajeSinContactos = $('#mensajeSinContactos');
+
+    	//Generamos los iconos de las columnas de acciones
     	var iconoVer = '<i class="material-icons green-text text-accent-4">assignment_ind</i>';
-    	var iconoEliminar = '<i class="material-icons green-text text-accent-4">delete</i>';
-    	//Generamos la bandeja de imágenes
+        var iconoEditar = '<i class="material-icons blue-text text-accent-4">mode_edit</i>';
+    	var iconoEliminar = '<i class="material-icons red-text text-accent-4">delete</i>';
+
+    	//Generamos la bandeja de contactos
         bandeja.DataTable( {
             'ajax': "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contactos')) ?>",
             'columns': [
@@ -119,23 +173,35 @@
             },
     		"createdRow": function( row, data, dataIndex ) {
     		    //Generamos la columna de menú
-    		    html = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Ver información" href="#modal" onclick="verContacto('+data.contacto_id+');">'+iconoVer+'</a>';
+    		    var tagIconoVer = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Ver información" href="#modal" onclick="verContacto('+data.contacto_id+');">'+iconoVer+'</a>';
+                var tagIconoEditar = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Editar contacto" href="#modal" onclick="edicionContacto('+data.contacto_id+');">'+iconoEditar+'</a>';
+                var tagIconoEliminar = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Eliminar contacto" href="#modal" onclick="mostrarEliminarContacto('+data.contacto_id+', \''+data.contacto_nombres+'\');">'+iconoEliminar+'</a>';
+                html = tagIconoVer+tagIconoEditar+tagIconoEliminar;
     		    $('td:eq(2)', row).html(html).addClass('center-align');
     		},
     	    "initComplete": function (settings, data) {
     	    	//Mostramos un mensaje distinto si no hay contactos registrados
     	    	if (data.data.length == 0) {
                     btnAgregarContacto.parent().hide();
-    	    		html = '<div class="center-align" id="mensajeSinContactos"><p>No hay contactos registrados</p>';
-    	    		html += '<a class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>';
-    	    		html += '</div>';
-    	    		bandeja.parent().before(html);
                     bandeja.parent().hide();
+                    mensajeSinContactos.show();
     	    	} else {
                     btnAgregarContacto.parent().show('fast');
                 }
                 contenedorBandeja.show();
-    	    }
+    	    },
+            "drawCallback": function(settings) {
+                //Revisamos si el usuario ha eliminado todos los contactos para mostrar el mensaje sin registros
+                if(settings.aoData.length > 0) {
+                    mensajeSinContactos.hide();
+                    bandeja.parent().show();
+                    btnAgregarContacto.parent().show();
+                } else {
+                    mensajeSinContactos.show();
+                    bandeja.parent().hide();
+                    btnAgregarContacto.parent().hide();
+                }
+            }
         } );
 
     	//Activamos los tooltip

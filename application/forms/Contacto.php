@@ -21,6 +21,12 @@ class Application_Form_Contacto extends Zend_Form
     		'class' => 'col s12'
     	));
         //Agregamos el input del nombre
+        $this->addElement('hidden', 'contacto_id', array(
+            'label'      => false,
+            'required'   => false,
+            'filters'    => array('StringTrim'),
+        ));  
+        //Agregamos el input del nombre
         $this->addElement('text', 'contacto_nombres', array(
             'label'      => 'Nombre(s):',
             'required'   => true,

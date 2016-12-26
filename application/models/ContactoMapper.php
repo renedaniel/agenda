@@ -23,52 +23,38 @@ class Application_Model_ContactoMapper {
     }
 
     public function save(Application_Model_Contacto $contacto) {
-        $data = array(
-            'contacto_id' => $contacto->getContactoId(),
-            'contacto_nombres' => $contacto->getContactoNombres(),
-            'contacto_apellidos' => $contacto->getContactoApellidos(),
-            'contacto_correo' => $contacto->getContactoCorreo(),
-        );
-
-        if (null === ($id = $contacto->getContactoId())) {
-            unset($data['id']);
-            $this->getDbTable()->insert($data);
+        $data = $contacto->toArray();
+        $contactoId = $contacto->getContactoId();
+        if (!isset($contactoId) || empty($contactoId)) {
+            unset($data['contacto_id']);
+            return $this->getDbTable()->insert($data);
         } else {
-            $this->getDbTable()->update($data, array('id = ?' => $id));
+            return $this->getDbTable()->update($data, array('contacto_id = ?' => $contactoId));
         }
+    }
+
+    public function delete($id) {
+        $result = $this->getDbTable()->find($id);
+        if (0 == count($result)) {
+            return false;
+        }
+        return $this->getDbTable()->delete('contacto_id = '.$id);
     }
 
     public function find($id) {
         $result = $this->getDbTable()->find($id);
         if (0 == count($result)) {
-            return;
+            return false;
         }
         $row = $result->current();
-        $registro = array(
-            'contacto_id' => $row->contacto_id,
-            'contacto_nombres' => $row->contacto_nombres,
-            'contacto_apellidos' => $row->contacto_apellidos,
-            'contacto_direccion' => $row->contacto_direccion,
-            'contacto_telefono' => $row->contacto_telefono,
-            'contacto_correo' => $row->contacto_correo,
-        );
-        return $registro;
+        return $row->toArray();
     }
 
     public function fetchAll() {
         $resultSet = $this->getDbTable()->fetchAll();
         $registros = array();
         foreach ($resultSet as $row) {
-            $registro = new Application_Model_Contacto();
-            $registro = array(
-                'contacto_id' => $row->contacto_id,
-                'contacto_nombres' => $row->contacto_nombres,
-                'contacto_apellidos' => $row->contacto_apellidos,
-                'contacto_direccion' => $row->contacto_direccion,
-                'contacto_telefono' => $row->contacto_telefono,
-                'contacto_correo' => $row->contacto_correo,
-            );
-            $registros[] = $registro;
+            $registros[] = $row->toArray();
         }
         return $registros;
     }

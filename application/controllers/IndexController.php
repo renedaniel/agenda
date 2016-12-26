@@ -66,26 +66,60 @@ class IndexController extends Zend_Controller_Action {
     }
 
     /**
-     * Método que genera el formulario para agregar un contacto
+     * Método que genera el formulario para agregar/editar un contacto vía ajax
      *
      * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
      * @return void
      */
     function edicionContactoAction() {
-        $this->view->title = "Agregar contacto";
-        $form = new Application_Form_Contacto();
-        //Si se envian datos, los evalúamos
-        $request = $this->getRequest()->getPost();
-        if ($this->getRequest()->isXmlHttpRequest() && !empty($request)) {
-            if ($form->isValid($request)) {
-                $contacto = new Application_Model_Contacto($form->getValues());
+        if ($this->getRequest()->isXmlHttpRequest()){
+            $this->view->title = "Agregar contacto";
+            $form = new Application_Form_Contacto();
+            //Si se envian datos, los evalúamos
+            $request = $this->getRequest()->getPost();
+            //Revisamos si se va a editar un usuario para cargar los datos
+            if (isset($request['contactoId']) && !empty($request['contactoId'])) {
+                $this->view->title = "Editar contacto";
+                $contacto = new Application_Model_Contacto();
                 $mapper  = new Application_Model_ContactoMapper();
-                $mapper->save($contacto);
-                $this->getResponse()->setHeader('exito', true);
+                $contacto = $mapper->find($request['contactoId']); 
+                $form->populate($contacto);
+            } elseif (!empty($request)) {
+                if ($form->isValid($request)) {
+                    $contacto = new Application_Model_Contacto($form->getValues());
+                    $mapper  = new Application_Model_ContactoMapper();
+                    if ($mapper->save($contacto)) {
+                        $this->getResponse()->setHeader('exito', true);
+                    }
+                }
             }
+            $this->view->form = $form;
+            $this->_helper->layout()->disableLayout();   
+            return;          
         }
-        $this->view->form = $form;
-        $this->_helper->layout()->disableLayout(); 
+        $this->_helper->redirector('index', 'index');
+    }
+
+    /**
+     * Método que permite eliminar un usuario vía ajax
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+     * @return void
+     */
+    function eliminarContactoAction() {
+        if ($this->getRequest()->isXmlHttpRequest()){
+            $contactoId = $this->getRequest()->getPost('contactoId');
+            if (isset($contactoId) && !empty($contactoId)) {
+                $mapper  = new Application_Model_ContactoMapper();
+                if ($mapper->delete($contactoId)) {
+                    $this->getResponse()->setHeader('exito', true);
+                    $this->_helper->layout()->disableLayout(); 
+                    $this->_helper->viewRenderer->setNoRender(true);
+                }
+            }
+            return;
+        }
+        $this->_helper->redirector('index', 'index');
     }
 
 }
