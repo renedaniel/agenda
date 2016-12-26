@@ -24,12 +24,13 @@ class Application_Model_ContactoMapper {
 
     public function save(Application_Model_Contacto $contacto) {
         $data = array(
-            'email' => $contacto->getEmail(),
-            'comment' => $contacto->getComment(),
-            'created' => date('Y-m-d H:i:s'),
+            'contacto_id' => $contacto->getContactoId(),
+            'contacto_nombres' => $contacto->getContactoNombres(),
+            'contacto_apellidos' => $contacto->getContactoApellidos(),
+            'contacto_correo' => $contacto->getContactoCorreo(),
         );
 
-        if (null === ($id = $contacto->getId())) {
+        if (null === ($id = $contacto->getContactoId())) {
             unset($data['id']);
             $this->getDbTable()->insert($data);
         } else {
@@ -37,16 +38,20 @@ class Application_Model_ContactoMapper {
         }
     }
 
-    public function find($id, Application_Model_Contacto $contacto) {
+    public function find($id) {
         $result = $this->getDbTable()->find($id);
         if (0 == count($result)) {
             return;
         }
         $row = $result->current();
-        $contacto->setId($row->id)
-                ->setEmail($row->email)
-                ->setComment($row->comment)
-                ->setCreated($row->created);
+        $registro = array(
+            'contacto_id' => $row->contacto_id,
+            'contacto_nombres' => $row->contacto_nombres,
+            'contacto_apellidos' => $row->contacto_empresa,
+            'contacto_telefono' => $row->contacto_telefono,
+            'contacto_correo' => $row->contacto_correo,
+        );
+        return $registro;
     }
 
     public function fetchAll() {

@@ -4,78 +4,146 @@
 <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/datatables.min.css" />
 <script src="<?php echo $this->baseUrl(); ?>/js/datatables.min.js"></script>
 
+<a class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>
 <div id="bandejaContactos">
    <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
       <thead>
          <tr>
-            <th class="center-align">Imagen</th>
-            <th class="center-align">Nombre</th>
-            <th class="center-align">Acciones</th>
+            <th class="center-align">Foto</th>
+            <th class="center-align">Nombre(s)</th>
+            <th class="center-align">Menú</th>
          </tr>
       </thead>
    </table>
 </div>
 <br>
+<!-- Modal Structure -->
+<div id="modal" class="modal modal-fixed-footer">
+    <div class="modal-content" id="modalContenido">
+        <h4>Modal Header</h4>
+        <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Cerrar</a>
+    </div>
+</div>
 <script type="text/javascript">
-$(document).ready(function() {
-	//Variables globales
-	var html = '';
-	var bandeja = $('#bandeja');
-	//Generamos un template para las imágenes
-	var template = '<a href="<?php echo $this->baseUrl(); ?>{index}" data-lightbox="mosaico" data-title="{nombre}">';
-	template += '<img class="responsive-img img-mosaico" alt="Cargando Gif" src="<?php $this->baseUrl(); ?>{index}" style="width:120px;">';
-	template += '</a>';
-	//Generamos la bandeja de imágenes
-    bandeja.DataTable( {
-        'ajax': "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contactos')) ?>",
-        'columns': [
-            { "data": 'contacto_nombres' },
-        ],
-		"columnDefs": [
-			{ "orderable": false, "targets": [0, 1, 2] },
-			{ "searchable": false, "targets": [0, 1, 2] }
-		],
-		"bLengthChange": false,
-		"order": [],
-        "oLanguage":{
-            "sProcessing":     "Procesando...",
-            "sZeroRecords":    "No se encontraron contactos con ese nombre",
-            "sInfo":           "Mostrando contactos _START_ al _END_. &nbsp;&nbsp;&nbsp;&nbsp;Total de contactos: _TOTAL_",
-            "sInfoEmpty":      "Mostrando contactos 0 al 0 de un total de 0 contactos",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ contactos)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst":    "ir al inicio",
-                "sLast":     "ir al final",
-                "sNext":     "siguiente »",
-                "sPrevious": "« anterior"
-            },
-            "oAria": {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    //Obtenemos los datos del modal
+    var modal = $('#modal');
+    var modalContenido = $('#modalContenido');
+
+    /**
+     * Función que muestra en un modal  los datos de un contacto
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @param {contactoId} id del contacto a buscar
+     * @return void
+     */
+    function verContacto(contactoId = null){
+        var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contacto')) ?>";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { contactoId:contactoId },
+            success: function(data, textStatus, request) {
+                console.log('ss');
+                console.log(data);
+                modalContenido.html('Nombre: '+data.contacto_nombres);
             }
-        },
-		"createdRow": function( row, data, dataIndex ) {
-			//Generamos el tag de imagen para la columna de imagen
+        });
+    }
 
-		},
-	    "initComplete": function (settings, data) {
-	    	//Mostramos un mensaje distinto si no hay contactos registrados
-	    	if (data.data.length == 0) {
-	    		html = '<div class="center-align"><p>No hay contactos registrados</p>';
-	    		html += '<a class="waves-effect  btn btnd" href="<?php echo $this->baseUrl(); ?>">¡Agregar contacto!</a>';
-	    		html += '</div>';
-	    		bandeja.parent().html(html);
-	    	}
-	    }
-    } );
+    /**
+     * Función que genera el formulario para guardar un nuevo contacto
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @return void
+     */
+    function agregarContacto(){
+        var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contacto')) ?>";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { contactoId:contactoId },
+            success: function(data, textStatus, request) {
+                console.log('ss');
+                console.log(data);
+                modalContenido.html('Nombre: '+data.contacto_nombres);
+            }
+        });
+    }
 
 
-	//Activamos los tooltip
-	bandeja.on( 'draw.dt', function () {
-	    $('.tooltipped').tooltip({delay: 50});
-	} );
-});
+
+    //Generamos la bandeja de contactos
+    $(document).ready(function() {
+    	//Variables globales
+    	var html = '';
+    	var bandeja = $('#bandeja');
+    	//Generamos un template para las imágenes
+    	var template = '<a href="<?php echo $this->baseUrl(); ?>{index}" data-lightbox="mosaico" data-title="{nombre}">';
+    	template += '<img class="responsive-img img-mosaico" alt="Cargando Gif" src="<?php $this->baseUrl(); ?>{index}" style="width:120px;">';
+    	template += '</a>';
+    	//Generamos los tags de las columnas de acciones
+    	var iconoVer = '<i class="material-icons green-text text-accent-4">assignment_ind</i>';
+    	var iconoEliminar = '<i class="material-icons green-text text-accent-4">delete</i>';
+    	//Generamos la bandeja de imágenes
+        bandeja.DataTable( {
+            'ajax': "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contactos')) ?>",
+            'columns': [
+                { "data": 'contacto_nombres' },
+                { "data": 'contacto_nombres' },
+                { "data": null },
+            ],
+    		"columnDefs": [
+    			{ "orderable": false, "targets": [0, 1, 2] },
+    			{ "searchable": false, "targets": [0, 1, 2] }
+    		],
+    		"bLengthChange": false,
+    		"order": [],
+            "oLanguage":{
+                "sProcessing":     "Procesando...",
+                "sZeroRecords":    "No se encontraron contactos con ese nombre",
+                "sInfo":           "Mostrando contactos _START_ al _END_. &nbsp;&nbsp;&nbsp;&nbsp;Total de contactos: _TOTAL_",
+                "sInfoEmpty":      "Mostrando contactos 0 al 0 de un total de 0 contactos",
+                "sInfoFiltered":   "(filtrado de un total de _MAX_ contactos)",
+                "sInfoPostFix":    "",
+                "sSearch":         "Buscar:",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "ir al inicio",
+                    "sLast":     "ir al final",
+                    "sNext":     "siguiente »",
+                    "sPrevious": "« anterior"
+                },
+                "oAria": {
+                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+    		"createdRow": function( row, data, dataIndex ) {
+    		    //Generamos la columna de menú
+    		    html = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Ver información" href="#modal" onclick="verContacto('+data.contacto_id+');">'+iconoVer+'</a>';
+    		    $('td:eq(2)', row).html(html).addClass('center-align');
+    		},
+    	    "initComplete": function (settings, data) {
+    	    	//Mostramos un mensaje distinto si no hay contactos registrados
+    	    	if (data.data.length == 0) {
+    	    		html = '<div class="center-align"><p>No hay contactos registrados</p>';
+    	    		html += '<a class="waves-effect  btn btnd" href="<?php echo $this->baseUrl(); ?>">¡Agregar contacto!</a>';
+    	    		html += '</div>';
+    	    		bandeja.parent().html(html);
+    	    	}
+    	    }
+        } );
+
+    	//Activamos los tooltip
+    	bandeja.on( 'draw.dt', function () {
+    	    $('.tooltipped').tooltip({delay: 50});
+    	} );
+
+        //Activamos los modales
+        $('.modal').modal();
+
+    });
 </script>

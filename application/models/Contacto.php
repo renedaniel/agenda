@@ -34,7 +34,11 @@ class Application_Model_Contacto {
     public function setOptions(array $options) {
         $methods = get_class_methods($this);
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set_' .$key;
+            $method = preg_replace_callback("/(?:^|_)([a-z])/", function($matches) {
+              return strtoupper($matches[1]);
+            }, $method);
+            $method = lcfirst($method);
             if (in_array($method, $methods)) {
                 $this->$method($value);
             }
@@ -46,7 +50,7 @@ class Application_Model_Contacto {
         return $this->_contacto_nombres;
     }
 
-    function getId() {
+    function getContactoId() {
         return $this->_contacto_id;
     }
 
@@ -71,7 +75,7 @@ class Application_Model_Contacto {
         return $this;
     }
 
-    function setId($_contacto_id) {
+    function setContactoId($_contacto_id) {
         $this->_contacto_id = $_contacto_id;
         return $this;
     }
