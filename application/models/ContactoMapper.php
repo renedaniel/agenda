@@ -47,7 +47,8 @@ class Application_Model_ContactoMapper {
         $registro = array(
             'contacto_id' => $row->contacto_id,
             'contacto_nombres' => $row->contacto_nombres,
-            'contacto_apellidos' => $row->contacto_empresa,
+            'contacto_apellidos' => $row->contacto_apellidos,
+            'contacto_direccion' => $row->contacto_direccion,
             'contacto_telefono' => $row->contacto_telefono,
             'contacto_correo' => $row->contacto_correo,
         );
@@ -62,7 +63,8 @@ class Application_Model_ContactoMapper {
             $registro = array(
                 'contacto_id' => $row->contacto_id,
                 'contacto_nombres' => $row->contacto_nombres,
-                'contacto_apellidos' => $row->contacto_empresa,
+                'contacto_apellidos' => $row->contacto_apellidos,
+                'contacto_direccion' => $row->contacto_direccion,
                 'contacto_telefono' => $row->contacto_telefono,
                 'contacto_correo' => $row->contacto_correo,
             );

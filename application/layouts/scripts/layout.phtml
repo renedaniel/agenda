@@ -4,6 +4,8 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+      <link href="<?php echo $this->baseUrl(); ?>/favicon.ico" type="image/x-icon" rel="icon"/>
+      <link href="<?php echo $this->baseUrl(); ?>/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
       <!-- Hojas de estilo -->
       <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/materialize.min.css" />
       <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/font-awesome.min.css" />
@@ -15,26 +17,33 @@
       <script src="<?php echo $this->baseUrl(); ?>/js/materialize.min.js"></script>
       <script src="<?php echo $this->baseUrl(); ?>/js/init.js"></script>
       <!-- Título de la página -->
-      <title><?php echo $this->escape($this->title); ?></title>
+      <title><?php echo $this->escape($this->title);?> | Easy Contacts</title>
    </head>
    <body>
       <!-- Barra de navegación -->
-      <div class="navbar-fixed">
+      <?php 
+         //Obtenemos el nombre de la acción y el controlador para asignar la clase active al botón del Menú
+         $controlador = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+         $accion = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+      ?>
+      <div class="navbar">
          <nav class="grey lighten-3" role="navigation" id="menuNavegacion">
             <div class="nav-wrapper container">
                <a id="logo-container" href="<?php echo $this->baseUrl(); ?>" class="brand-logo"><img src="<?php echo $this->baseUrl(); ?>/images/logo.png" alt="Agenda" id="logo"/></a>
+               <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
                <!-- Menú para versión de PC -->
                <ul class="right hide-on-med-and-down">
-                  <li><a class="waves-effect  btn btnm" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+                  <li><a class="waves-effect  btn <?php echo ($controlador == 'index' && $accion == 'index')?'active': ''?>" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+                  <li><a class="waves-effect  btn <?php echo ($controlador == 'index' && $accion == 'acerca')?'active': ''?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'acerca')) ?>">Acerca</a></li>
                </ul>
-               <!-- Menú para versión responsiva -->
-               <ul id="nav-mobile" class="side-nav">
-                  <li><a class="waves-effect  btn btnm" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
-               </ul>
-               <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             </div>
          </nav>
-      </div><!-- Termina Barra de navegación -->
+      </div>
+      <!-- Menú para versión responsiva -->
+      <ul id="nav-mobile" class="side-nav">
+          <li><a class="waves-effect  btn btnm <?php echo ($controlador == 'index' && $accion == 'index') ? 'active' : '' ?>" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+          <li><a class="waves-effect  btn btnm <?php echo ($controlador == 'index' && $accion == 'acerca') ? 'active' : '' ?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'acerca')) ?>">Acerca</a></li>
+      </ul><!-- Termina Barra de navegación -->
       <!-- Contenido de las vistas -->
       <div class="row" id="contenidoLayout">
          <h3 class="titulo-seccion"><?php echo $this->escape($this->title); ?></h1>

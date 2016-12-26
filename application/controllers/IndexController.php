@@ -23,6 +23,16 @@ class IndexController extends Zend_Controller_Action {
     }
 
     /**
+     * Método que muestra la vista con la información de la aplicación
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+     * @return void
+     */
+    public function acercaAction() {
+        $this->view->title = 'Sobre la aplicación';
+    }
+
+    /**
      * Método que envía un JSON con todos los contactos existentes
      *
      * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
@@ -65,17 +75,17 @@ class IndexController extends Zend_Controller_Action {
         $this->view->title = "Agregar contacto";
         $form = new Application_Form_Contacto();
         //Si se envian datos, los evalúamos
-        if ($this->getRequest()->isPost()) {
-            if ($form->isValid($this->getRequest()->getPost())) {
+        $request = $this->getRequest()->getPost();
+        if ($this->getRequest()->isXmlHttpRequest() && !empty($request)) {
+            if ($form->isValid($request)) {
                 $contacto = new Application_Model_Contacto($form->getValues());
                 $mapper  = new Application_Model_ContactoMapper();
                 $mapper->save($contacto);
-                return $this->_helper->redirector('index');
+                $this->getResponse()->setHeader('exito', true);
             }
         }
         $this->view->form = $form;
-        
-
+        $this->_helper->layout()->disableLayout(); 
     }
 
 }

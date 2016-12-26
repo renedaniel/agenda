@@ -5,7 +5,7 @@
  */
 nav ul a,
 nav .brand-logo {
-  color: #444;
+  color: white;
 }
 
 p {
@@ -125,7 +125,7 @@ label.required:after {
 
 #menuNavegacion, .navbar-fixed {
   height: 110px;
-  background-image: url(../images/backgroundc.gif), url(../images/backgroundc.gif);
+  background-color: #212121 !important;
 }
 
 nav ul li a.btn {
@@ -144,11 +144,13 @@ nav ul li a.btn:hover, nav ul li a.btn.active, .btnd {
   font-family: 'Fjalla One', sans-serif;
 }
 
-nav ul li a.btnm {
+#nav-mobile li a.btnm {
+  background-color: white !important;
   color: #212121 !important;
+  font-family: 'Fjalla One', sans-serif;
 }
 
-.side-nav a.btnm:hover, .side-nav a.btnm.active {
+#nav-mobile a.btnm:hover, #nav-mobile a.btnm.active {
   color: white !important;
   background-color: #212121 !important;
 }
@@ -182,7 +184,7 @@ nav a.button-collapse i {
   font-family: "Fjalla One",sans-serif;
 }
 /* Estilos para la bandeja de usuario */
-#bandejaUsuario, #bandeja_info, #bandeja_paginate a{
+#bandejaContactos, #bandeja_info, #bandeja_paginate a{
   color: #212121 !important;
   font-family: "Fjalla One",sans-serif;
 }
@@ -193,7 +195,7 @@ nav a.button-collapse i {
   border-radius: 5px;
 }
 
-#bandejaUsuario .paginate_button.current, #bandejaUsuario .paginate_button:hover{
+#bandejaContactos .paginate_button.current, #bandejaContactos .paginate_button:hover{
   background: #212121 !important;
   color: white !important;
   border: none;
@@ -206,7 +208,7 @@ table.dataTable thead th{
   font-size: 17px;
 }
 
-#bandejaUsuario{
+#bandejaContactos{
   padding-right: 20px;
   padding-left: 20px;
 }

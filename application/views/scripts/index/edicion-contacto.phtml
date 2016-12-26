@@ -1,4 +1,70 @@
-<?php 
+<h3 class="titulo-seccion"><?php echo $this->escape($this->title);?> </h3>
+<?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+?>
 
-$this->form->setAction($this->url());
-echo $this->form;
+<!-- Mensaje para indicar el procesamiento de datos-->
+<div class="center-align" id="loader" hidden>
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+</div>
+<!-- Termina mensaje para indicar el procesamiento de datos-->
+
+<script type="text/javascript">
+    //Variables globales
+    var formularioContacto = $("#formularioContacto");
+    var loader = $("#loader");
+    var modal = $('#modal');
+    var modalContenido = $('#modalContenido');
+    var bandeja = $('#bandeja');
+    var btnAgregarContacto = $('#btnAgregarContacto');
+
+    //Generamos los botones de enviar y cancelar para el formulario
+    var template = '<div class="row"><div class="input-field col s6 right-align">';
+    template += '<a onclick="modal.modal(\'close\');" class="btn-large btnd btnc">Cancelar</a></div>';
+    template += '<div class="input-field col s6 lef-align">';
+    template += '<button class="btn-large btnd" type="submit">&nbsp;&nbsp;Enviar&nbsp;&nbsp;</button></div></div>';
+
+    formularioContacto.append(template);
+
+    //Enviamos el formulario vía ajax
+    formularioContacto.submit(function (e) {
+        //Obtenemos los datos del formulario
+        var datosFormulario = formularioContacto.serializeArray().reduce(function (obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+        //Eliminamos el método para enviar sólo los datos
+        delete datosFormulario['_method'];
+        //Procesamos el formulario
+        $.ajax({
+            url: "<?php echo $this->url(array('controller' => 'index', 'action' => 'edicion-contacto')) ?>",
+            type: 'POST',
+            data: datosFormulario,
+            beforeSend: function (xhr) {
+                //Mostramos mensaje de envío cuando se procese los datos
+                loader.show('fast');
+            },
+            success: function (data, textStatus, request) {
+                //Ocultamos el mensaje de envío de datos
+                loader.hide('fast');
+                //Si hay errores, envíamos mensaje de info y mostramos el formulario
+                if (request.getResponseHeader('exito') == null) {
+                    Materialize.toast('Por favor verifica tu información', 3000, 'mensaje-alerta');
+                    modalContenido.html(data);
+                    Materialize.updateTextFields();
+                } else {
+                    //Aseguramos mostrar los datos más recientes y de ocultar el modal
+                    bandeja.DataTable().ajax.reload();
+                    bandeja.parent().show();
+                    btnAgregarContacto.parent().show('fast');
+                    $('#mensajeSinContactos').hide();
+                    modal.modal('close');
+                }
+            }
+        });
+        return false;
+    });
+</script>

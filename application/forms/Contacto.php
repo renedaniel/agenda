@@ -1,8 +1,18 @@
 <?php
-
+/**
+ * Clase para generar el formulario para guardar un contacto
+ *
+ * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+ */
 class Application_Form_Contacto extends Zend_Form
 {
 
+    /**
+     * Método que ejecuta la configuración inicial par generar el formulario
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+     * @return void
+     */
     public function init()
     {
     	$this->setMethod('post');
@@ -10,32 +20,59 @@ class Application_Form_Contacto extends Zend_Form
     		'id' => 'formularioContacto',
     		'class' => 'col s12'
     	));
-    	//Agregamos el input del nombre
+        //Agregamos el input del nombre
         $this->addElement('text', 'contacto_nombres', array(
             'label'      => 'Nombre(s):',
             'required'   => true,
             'filters'    => array('StringTrim'),
-			'validators' => array(
-            	array('NotEmpty', true, array('messages' => 'El campo Nombre(s) es obligatorio')),
+            'validators' => array(
+                array('NotEmpty', true, array('messages' => 'El campo Nombre(s) es obligatorio')),
+                
+            )
+        ));   
+        //Agregamos el input de los apellidos
+        $this->addElement('text', 'contacto_apellidos', array(
+            'label'      => 'Apellido(s):',
+            'required'   => false,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+                array('Alnum', true, array(
+                    'messages' => 'El campo Apellido(s) sólo acepta letras y/o números',
+                    'allowWhiteSpace' => true,
+                )),
+                
+            )
+        ));   
+        //Agregamos el input del nombre
+        $this->addElement('text', 'contacto_direccion', array(
+            'label'      => 'Dirección:',
+            'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+                array('NotEmpty', true, array('messages' => 'El campo Dirección es obligatorio')),
+                
+            )
+        ));   
+        //Agregamos el input del nombre
+        $this->addElement('text', 'contacto_telefono', array(
+            'label'      => 'Teléfono:',
+            'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+                array('NotEmpty', true, array('messages' => 'El campo Teléfono es obligatorio')),
                 
             )
         ));     	
     	//Agregamos el input del email
         $this->addElement('text', 'contacto_correo', array(
             'label'      => 'Email:',
-            'required'   => true,
+            'required'   => false,
             'filters'    => array('StringTrim'),
             'validators' => array(
-            	array('NotEmpty', true, array('messages' => 'El campo Email es obligatorio')),
                 array('EmailAddress', true, array('messages' => 'Debe escribir un email válido')),
             )
         ));  
-        //Agregamos el botón de enviar
-        $this->addElement('submit', 'submit', array(
-            'ignore'   => true,
-            'label'    => 'Enviar',
-            'class' => 'btn-large btnd'
-        ));  	
+	
         //Cambiamos la forma de generar los tags
 		$this->clearDecorators();
 		$this->addDecorator('FormElements')
@@ -50,12 +87,7 @@ class Application_Form_Contacto extends Zend_Form
 			array('HtmlTag', array('tag' => 'div', 'class'=>'input-field col s12')),
 		));
 
-		//Quitamos el label del botón de enviar
-		$this->getElement('submit')->removeDecorator('Label');
-
-		//Zend_Debug::dump($this);exit;
     }
-
 
 }
 

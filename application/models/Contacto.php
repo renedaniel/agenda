@@ -5,7 +5,7 @@ class Application_Model_Contacto {
     protected $_contacto_id;
     protected $_contacto_nombres;
     protected $_contacto_apellidos;
-    protected $_contacto_empresa;
+    protected $_contacto_direccion;
     protected $_contacto_telefono;
     protected $_contacto_correo;
 
@@ -58,8 +58,8 @@ class Application_Model_Contacto {
         return $this->_contacto_apellidos;
     }
 
-    function getContactoEmpresa() {
-        return $this->_contacto_empresa;
+    function getContactoDireccion() {
+        return $this->_contacto_direccion;
     }
 
     function getContactoTelefono() {
@@ -85,8 +85,8 @@ class Application_Model_Contacto {
         return $this;
     }
 
-    function setContactoEmpresa($_contacto_empresa) {
-        $this->_contacto_empresa = $_contacto_empresa;
+    function setContactoDireccion($_contacto_direccion) {
+        $this->_contacto_direccion = $_contacto_direccion;
         return $this;
     }
 

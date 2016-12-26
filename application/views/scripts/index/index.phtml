@@ -1,11 +1,10 @@
-<?php
-//Zend_Debug::dump($this->contactos);
-?>
 <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/datatables.min.css" />
 <script src="<?php echo $this->baseUrl(); ?>/js/datatables.min.js"></script>
-
-<a class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>
-<div id="bandejaContactos">
+<div class="col s12 right-align" hidden>
+    <a  id="btnAgregarContacto" class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>
+    <br><br>
+</div>
+<div id="bandejaContactos" hidden>
    <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
       <thead>
          <tr>
@@ -22,9 +21,6 @@
     <div class="modal-content" id="modalContenido">
         <h4>Modal Header</h4>
         <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Cerrar</a>
     </div>
 </div>
 <script type="text/javascript">
@@ -60,15 +56,13 @@
      * @return void
      */
     function agregarContacto(){
-        var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contacto')) ?>";
+        var url = "<?php echo $this->url(array('controller' => 'index', 'action' => 'edicion-contacto')) ?>";
         $.ajax({
             url: url,
             type: 'POST',
-            data: { contactoId:contactoId },
             success: function(data, textStatus, request) {
-                console.log('ss');
-                console.log(data);
-                modalContenido.html('Nombre: '+data.contacto_nombres);
+                modalContenido.html(data);
+                modal.modal('open');
             }
         });
     }
@@ -80,6 +74,8 @@
     	//Variables globales
     	var html = '';
     	var bandeja = $('#bandeja');
+        var contenedorBandeja = $('#bandejaContactos');
+        var btnAgregarContacto = $('#btnAgregarContacto');
     	//Generamos un template para las imágenes
     	var template = '<a href="<?php echo $this->baseUrl(); ?>{index}" data-lightbox="mosaico" data-title="{nombre}">';
     	template += '<img class="responsive-img img-mosaico" alt="Cargando Gif" src="<?php $this->baseUrl(); ?>{index}" style="width:120px;">';
@@ -129,11 +125,16 @@
     	    "initComplete": function (settings, data) {
     	    	//Mostramos un mensaje distinto si no hay contactos registrados
     	    	if (data.data.length == 0) {
-    	    		html = '<div class="center-align"><p>No hay contactos registrados</p>';
-    	    		html += '<a class="waves-effect  btn btnd" href="<?php echo $this->baseUrl(); ?>">¡Agregar contacto!</a>';
+                    btnAgregarContacto.parent().hide();
+    	    		html = '<div class="center-align" id="mensajeSinContactos"><p>No hay contactos registrados</p>';
+    	    		html += '<a class="waves-effect  btn btnd" href="#" onclick="agregarContacto();">¡Agregar contacto!</a>';
     	    		html += '</div>';
-    	    		bandeja.parent().html(html);
-    	    	}
+    	    		bandeja.parent().before(html);
+                    bandeja.parent().hide();
+    	    	} else {
+                    btnAgregarContacto.parent().show('fast');
+                }
+                contenedorBandeja.show();
     	    }
         } );
 
@@ -143,7 +144,6 @@
     	} );
 
         //Activamos los modales
-        $('.modal').modal();
-
+        modal.modal();
     });
 </script>
