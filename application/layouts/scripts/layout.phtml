@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+      <!-- Hojas de estilo -->
+      <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/materialize.min.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/font-awesome.min.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/style.css" />
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+      <!-- Librerias JS -->
+      <script src="<?php echo $this->baseUrl(); ?>/js/jquery.min.js"></script>
+      <script src="<?php echo $this->baseUrl(); ?>/js/materialize.min.js"></script>
+      <script src="<?php echo $this->baseUrl(); ?>/js/init.min.js"></script>
+      <!-- Título de la página -->
+      <title><?php echo $this->escape($this->title); ?></title>
+   </head>
+   <body>
+      <!-- Barra de navegación -->
+      <div class="navbar-fixed">
+         <nav class="grey lighten-3" role="navigation" id="menuNavegacion">
+            <div class="nav-wrapper container">
+               <a id="logo-container" href="<?php echo $this->baseUrl(); ?>" class="brand-logo"><img src="<?php echo $this->baseUrl(); ?>/images/logo.png" alt="Agenda" id="logo"/></a>
+               <!-- Menú para versión de PC -->
+               <ul class="right hide-on-med-and-down">
+                  <li><a class="waves-effect  btn btnm" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+               </ul>
+               <!-- Menú para versión responsiva -->
+               <ul id="nav-mobile" class="side-nav">
+                  <li><a class="waves-effect  btn btnm" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+               </ul>
+               <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+            </div>
+         </nav>
+      </div><!-- Termina Barra de navegación -->
+      <!-- Contenido de las vistas -->
+      <div class="row" id="contenidoLayout">
+         <h3 class="titulo-seccion"><?php echo $this->escape($this->title); ?></h1>
+         <?php echo $this->layout()->content; ?>
+      </div><!-- Termina Contenido de las vistas -->
+      <!-- Social -->
+      <section id="lab_social_icon_footer">
+         <div class="container">
+            <div class="text-center center-block">
+               <a href="#"><i id="social-fb" class="fa fa-facebook-square fa-3x social"></i></a>
+               <a href="#"><i id="social-tw" class="fa fa-twitter-square fa-3x social"></i></a>
+               <a href="#"><i id="social-gp" class="fa fa-google-plus-square fa-3x social"></i></a>
+               <a href="#"><i id="social-em" class="fa fa-envelope-square fa-3x social"></i></a>
+            </div>
+         </div>
+      </section><!-- Termina Social -->
+      <!-- Footer -->
+      <footer class="page-footer site-footer teal grey darken-3">
+         <div class="footer-copyright">
+            <div class="container">
+               Made by <a class="brown-text text-lighten-3" href="#">René Daniel</a>
+            </div>
+         </div>
+      </footer><!-- Termina Footer -->
+   </body>
+</html>

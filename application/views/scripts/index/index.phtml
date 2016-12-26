@@ -1,0 +1,81 @@
+<?php
+//Zend_Debug::dump($this->contactos);
+?>
+<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseUrl(); ?>/css/datatables.min.css" />
+<script src="<?php echo $this->baseUrl(); ?>/js/datatables.min.js"></script>
+
+<div id="bandejaContactos">
+   <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
+      <thead>
+         <tr>
+            <th class="center-align">Imagen</th>
+            <th class="center-align">Nombre</th>
+            <th class="center-align">Acciones</th>
+         </tr>
+      </thead>
+   </table>
+</div>
+<br>
+<script type="text/javascript">
+$(document).ready(function() {
+	//Variables globales
+	var html = '';
+	var bandeja = $('#bandeja');
+	//Generamos un template para las imágenes
+	var template = '<a href="<?php echo $this->baseUrl(); ?>{index}" data-lightbox="mosaico" data-title="{nombre}">';
+	template += '<img class="responsive-img img-mosaico" alt="Cargando Gif" src="<?php $this->baseUrl(); ?>{index}" style="width:120px;">';
+	template += '</a>';
+	//Generamos la bandeja de imágenes
+    bandeja.DataTable( {
+        'ajax': "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contactos')) ?>",
+        'columns': [
+            { "data": 'contacto_nombres' },
+        ],
+		"columnDefs": [
+			{ "orderable": false, "targets": [0, 1, 2] },
+			{ "searchable": false, "targets": [0, 1, 2] }
+		],
+		"bLengthChange": false,
+		"order": [],
+        "oLanguage":{
+            "sProcessing":     "Procesando...",
+            "sZeroRecords":    "No se encontraron contactos con ese nombre",
+            "sInfo":           "Mostrando contactos _START_ al _END_. &nbsp;&nbsp;&nbsp;&nbsp;Total de contactos: _TOTAL_",
+            "sInfoEmpty":      "Mostrando contactos 0 al 0 de un total de 0 contactos",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ contactos)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "ir al inicio",
+                "sLast":     "ir al final",
+                "sNext":     "siguiente »",
+                "sPrevious": "« anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        },
+		"createdRow": function( row, data, dataIndex ) {
+			//Generamos el tag de imagen para la columna de imagen
+
+		},
+	    "initComplete": function (settings, data) {
+	    	//Mostramos un mensaje distinto si no hay contactos registrados
+	    	if (data.data.length == 0) {
+	    		html = '<div class="center-align"><p>No hay contactos registrados</p>';
+	    		html += '<a class="waves-effect  btn btnd" href="<?php echo $this->baseUrl(); ?>">¡Agregar contacto!</a>';
+	    		html += '</div>';
+	    		bandeja.parent().html(html);
+	    	}
+	    }
+    } );
+
+
+	//Activamos los tooltip
+	bandeja.on( 'draw.dt', function () {
+	    $('.tooltipped').tooltip({delay: 50});
+	} );
+});
+</script>
