@@ -18,7 +18,6 @@ class IndexController extends Zend_Controller_Action {
      */
     public function indexAction() {
         $contactos = new Application_Model_ContactoMapper();
-        $this->view->contactos = $contactos->fetchAll();
         $this->view->title = 'Contactos';
     }
 
@@ -42,7 +41,7 @@ class IndexController extends Zend_Controller_Action {
         //Si la petición es ajax envíamos los datos sino redirigimos al index
         if ($this->getRequest()->isXmlHttpRequest()) {
             $contactos = new Application_Model_ContactoMapper();
-            $data['data'] = $contactos->fetchAll();
+            $data['data'] = $contactos->getContactos();
             $this->getHelper('json')->sendJson($data);
         }
         $this->_helper->redirector('index', 'index');
@@ -59,7 +58,7 @@ class IndexController extends Zend_Controller_Action {
         $contactoId = $this->getRequest()->getPost('contactoId');
         if ($this->getRequest()->isXmlHttpRequest() && isset($contactoId)) {
             $contactos = new Application_Model_ContactoMapper();
-            $data = $contactos->find($contactoId);
+            $data = $contactos->getContactoById($contactoId);
             $this->getHelper('json')->sendJson($data);
         }
         $this->_helper->redirector('index', 'index');
@@ -82,7 +81,7 @@ class IndexController extends Zend_Controller_Action {
                 $this->view->title = "Editar contacto";
                 $contacto = new Application_Model_Contacto();
                 $mapper  = new Application_Model_ContactoMapper();
-                $contacto = $mapper->find($request['contactoId']); 
+                $contacto = $mapper->getContactoById($request['contactoId']); 
                 $form->populate($contacto);
             } elseif (!empty($request)) {
                 if ($form->isValid($request)) {

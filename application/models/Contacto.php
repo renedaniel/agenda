@@ -1,7 +1,11 @@
 <?php
-
+/**
+ * Modelo para simular la entidad de un contacto
+ *
+ * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+ */
 class Application_Model_Contacto {
-
+    //Atributos que se interpretan de los campos de la tabla contacto
     protected $_contacto_id;
     protected $_contacto_nombres;
     protected $_contacto_apellidos;
@@ -9,20 +13,42 @@ class Application_Model_Contacto {
     protected $_contacto_telefono;
     protected $_contacto_correo;
 
+    /**
+     * Método mágico para ejecutar el constructor
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @param array $options atributos con los que se desea iniciar la entidad contacto  
+     * @return void
+     */
     public function __construct(array $options = null) {
         if (is_array($options)) {
             $this->setOptions($options);
         }
     }
 
+    /**
+     * Método mágico para settear los datos del objeto según los atributos definidos
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+     * @param string $name nombre del campo que se quiere asignar
+     * @param string $value valor que se le quiere dar al campo
+     * @return void
+     */
     public function __set($name, $value) {
         $method = 'set' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
-            throw new Exception('Propiedad inválida');
+            throw new Exception('Atributo inválido');
         }
         $this->$method($value);
     }
 
+    /**
+     * Método mágico para obtener el valor de alguno de los atributos
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>
+     * @param string $name nombre del campo que se quiere obtener  
+     * @return void
+     */
     public function __get($name) {
         $method = 'get' . $name;
         if (('mapper' == $name) || !method_exists($this, $method)) {
@@ -31,6 +57,13 @@ class Application_Model_Contacto {
         return $this->$method();
     }
 
+    /**
+     * Método para iniciar varios atributos de un modelo de contacto 
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com> 
+     * @param array $options atributos con los que se desea iniciar la entidad contacto   
+     * @return Application_Model_Contacto $this
+     */
     public function setOptions(array $options) {
         $methods = get_class_methods($this);
         foreach ($options as $key => $value) {
@@ -46,6 +79,12 @@ class Application_Model_Contacto {
         return $this;
     }
 
+    /**
+     * Método para convertir la entidad en un arreglo con los valores de los atributos 
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com> 
+     * @return array $array Arreglo con el diccionario de los datos de la entidad
+     */
     public function toArray() {
         $vars = get_object_vars ($this);
         $array = array ();
@@ -54,6 +93,12 @@ class Application_Model_Contacto {
         }
         return $array;
     }
+
+    /**
+     * Getters y Setters de los atributos de la entidad 
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com> 
+     */
 
     function getContactoNombres() {
         return $this->_contacto_nombres;
