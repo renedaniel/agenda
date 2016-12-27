@@ -250,6 +250,7 @@
         //Activamos los modales
         modal.modal();
         modal.on('closeModal', function () {
+            modalContenido.html('');
             $('.tooltipped').tooltip({delay: 50});
         } );
         modal.on('openModal', function () {
