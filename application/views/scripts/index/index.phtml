@@ -9,8 +9,8 @@
    <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
       <thead>
          <tr>
-            <th class="center-align">Foto</th>
             <th class="center-align">Nombre(s)</th>
+            <th class="center-align">Teléfono</th>
             <th class="center-align">Menú</th>
          </tr>
       </thead>
@@ -50,9 +50,25 @@
             type: 'POST',
             data: { contactoId:contactoId },
             success: function(data, textStatus, request) {
-                console.log('ss');
-                console.log(data);
-                modalContenido.html('Nombre: '+data.contacto_nombres);
+                //Generamos una tabla para mostrar los datos en el modal
+                var html = '<h3 class="titulo-seccion"> Contacto </h3>';
+                html += '<table id="detalleContacto" class="display responsive-table striped" cellspacing="0" width="100%"><tbody>';
+                var diccionario = data['diccionario'];
+                //Iteramos sobre los valores para hacerlo dinámico
+                $.each(data.valores, function( index, value ) {
+                    if (index != 'contacto_id') {
+                        if (value == null || value.length == 0) { value = '--';}
+                        html += '<tr><td class="center-align" width="50%">'+diccionario[index]+'</td>';
+                        html += '<td class="center-align" width="50%">'+value+'</td></tr>';
+                    }
+                });
+                html += '</tbody></table>'
+                //Generamos un botón para cerrar el modal
+                var btnCerrar = '<div class="row"><div class="input-field col s12 center-align">';
+                btnCerrar += '<a onclick="modal.modal(\'close\');" class="btn-large btnd">Cerrar</a></div>';
+                btnCerrar += '</div>';
+                html += btnCerrar;
+                modalContenido.html(html);
             }
         });
     }
@@ -133,8 +149,8 @@
         var mensajeSinContactos = $('#mensajeSinContactos');
 
     	//Generamos los iconos de las columnas de acciones
-    	var iconoVer = '<i class="material-icons green-text text-accent-4">assignment_ind</i>';
-        var iconoEditar = '<i class="material-icons blue-text text-accent-4">mode_edit</i>';
+    	var iconoVer = '<i class="material-icons green-text">assignment_ind</i>';
+        var iconoEditar = '<i class="material-icons blue-text">mode_edit</i>';
     	var iconoEliminar = '<i class="material-icons red-text text-accent-4">delete</i>';
 
     	//Generamos la bandeja de contactos
@@ -142,7 +158,7 @@
             'ajax': "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-contactos')) ?>",
             'columns': [
                 { "data": 'contacto_nombres' },
-                { "data": 'contacto_nombres' },
+                { "data": 'contacto_telefono' },
                 { "data": null },
             ],
     		"columnDefs": [
@@ -178,6 +194,9 @@
                 var tagIconoEliminar = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Eliminar contacto" href="#modal" onclick="mostrarEliminarContacto('+data.contacto_id+', \''+data.contacto_nombres+'\');">'+iconoEliminar+'</a>';
                 html = tagIconoVer+tagIconoEditar+tagIconoEliminar;
     		    $('td:eq(2)', row).html(html).addClass('center-align');
+                //Centramos las columnas restantes
+                $('td:eq(0)', row).addClass('center-align');
+                $('td:eq(1)', row).addClass('center-align');
     		},
     	    "initComplete": function (settings, data) {
     	    	//Mostramos un mensaje distinto si no hay contactos registrados

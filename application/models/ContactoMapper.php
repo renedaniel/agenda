@@ -8,7 +8,13 @@ class Application_Model_ContactoMapper {
 
     protected $_dbTable;
     protected $_db;
-
+    protected $_etiquetasCampos = array(
+        'contacto_nombres' => 'Nombre(s)',
+        'contacto_apellidos' => 'Apellido(s)',
+        'contacto_direccion' => 'Dirección',
+        'contacto_telefono' => 'Teléfono',
+        'contacto_correo' => 'Email',
+    );
     /**
      * Método que establece la tabla utilizada por el modelo
      *
@@ -52,6 +58,16 @@ class Application_Model_ContactoMapper {
             $this->setDbTable('Application_Model_DbTable_Contacto');
         }
         return $this->_db;
+    }
+
+    /**
+     * Método que obtiene el diccionario con las etiquetas que se representan los campos de la tabla
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>    
+     * @return Array $this->_etiquetasCampos Arreglo con el diccionario de las etiquetas para los campos
+     */
+    public function getEtiquetasCampos() {
+        return $this->_etiquetasCampos;
     }
 
     /**

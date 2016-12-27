@@ -18,7 +18,7 @@ class IndexController extends Zend_Controller_Action {
      */
     public function indexAction() {
         $contactos = new Application_Model_ContactoMapper();
-        $this->view->title = 'Contactos';
+        $this->view->title = 'Bandeja de contactos';
     }
 
     /**
@@ -58,7 +58,8 @@ class IndexController extends Zend_Controller_Action {
         $contactoId = $this->getRequest()->getPost('contactoId');
         if ($this->getRequest()->isXmlHttpRequest() && isset($contactoId)) {
             $contactos = new Application_Model_ContactoMapper();
-            $data = $contactos->getContactoById($contactoId);
+            $data['valores'] = $contactos->getContactoById($contactoId);
+            $data['diccionario'] = $contactos->getEtiquetasCampos();
             $this->getHelper('json')->sendJson($data);
         }
         $this->_helper->redirector('index', 'index');
