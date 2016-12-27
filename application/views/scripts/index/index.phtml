@@ -57,8 +57,12 @@
                 //Iteramos sobre los valores para hacerlo dinámico
                 $.each(data.valores, function( index, value ) {
                     if (index != 'contacto_id') {
+                        //Le damos formato al número de teléfono
+                        if (index == 'contacto_telefono') {
+                            value = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                        }
                         if (value == null || value.length == 0) { value = '--';}
-                        html += '<tr><td class="center-align" width="50%">'+diccionario[index]+'</td>';
+                        html += '<tr><td class="center-align" width="50%">'+diccionario[index]+':</td>';
                         html += '<td class="center-align" width="50%">'+value+'</td></tr>';
                     }
                 });
@@ -167,7 +171,8 @@
     			{ "searchable": false, "targets": [2] }
     		],
     		"bLengthChange": false,
-    		"order": [],
+    		"order": [[ 0, "asc" ]],
+            "pageLength": 10,
             "oLanguage":{
                 "sProcessing":     "Procesando...",
                 "sZeroRecords":    "No se encontraron contactos con ese nombre",
@@ -195,9 +200,11 @@
                 var tagIconoEliminar = '<a class="modal-trigger tooltipped ver-contacto" data-position="left" data-tooltip="Eliminar contacto" href="#modal" onclick="mostrarEliminarContacto('+data.contacto_id+', \''+data.contacto_nombres+'\');">'+iconoEliminar+'</a>';
                 html = tagIconoVer+tagIconoEditar+tagIconoEliminar;
     		    $('td:eq(2)', row).html(html).addClass('center-align');
+                //Damos formato al número de teléfono
+                html = data.contacto_telefono.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                $('td:eq(1)', row).html(html).addClass('center-align');
                 //Centramos las columnas restantes
                 $('td:eq(0)', row).addClass('center-align');
-                $('td:eq(1)', row).addClass('center-align');
     		},
     	    "initComplete": function (settings, data) {
     	    	//Mostramos un mensaje distinto si no hay contactos registrados
@@ -221,8 +228,19 @@
                     bandeja.parent().hide();
                     btnAgregarContacto.parent().hide();
                 }
+                //Desactivamos la paginación si sólo hay una página de datos
+                var pagination = $(this).closest('.dataTables_wrapper').find('.dataTables_paginate');
+                pagination.toggle(this.api().page.info().pages > 1);
             }
         } );
+
+        //Si el usuario intenta buscar el teléfono con guiones lo normalizamos
+        var input = $(".dataTables_filter input");
+        input.unbind('keyup search input').bind('keyup', function (e) {
+            var keywords = input.val();
+            var filter = keywords.replace(/-/g, '');
+            bandeja.dataTable().fnFilter(filter, null, true, false, false, true);
+        });
 
     	//Activamos los tooltip
     	bandeja.on('draw.dt', function () {

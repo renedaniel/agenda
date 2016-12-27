@@ -29,11 +29,11 @@
       <div class="navbar">
          <nav class="grey lighten-3" role="navigation" id="menuNavegacion">
             <div class="nav-wrapper container">
-               <a id="logo-container" href="<?php echo $this->baseUrl(); ?>" class="brand-logo"><img src="<?php echo $this->baseUrl(); ?>/images/logo.png" alt="Agenda" id="logo"/></a>
+               <a id="logo-container" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'index')); ?>" class="brand-logo"><img src="<?php echo $this->baseUrl(); ?>/images/logo.png" alt="Agenda" id="logo"/></a>
                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
                <!-- Menú para versión de PC -->
                <ul class="right hide-on-med-and-down">
-                  <li><a class="waves-effect  btn <?php echo ($controlador == 'index' && $accion == 'index')?'active': ''?>" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+                  <li><a class="waves-effect  btn <?php echo ($controlador == 'index' && $accion == 'index')?'active': ''?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'index')); ?>">Inicio</a></li>
                   <li><a class="waves-effect  btn <?php echo ($controlador == 'index' && $accion == 'acerca')?'active': ''?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'acerca')) ?>">Acerca</a></li>
                </ul>
             </div>
@@ -41,7 +41,7 @@
       </div>
       <!-- Menú para versión responsiva -->
       <ul id="nav-mobile" class="side-nav">
-          <li><a class="waves-effect  btn btnm <?php echo ($controlador == 'index' && $accion == 'index') ? 'active' : '' ?>" href="<?php echo $this->baseUrl(); ?>">Inicio</a></li>
+          <li><a class="waves-effect  btn btnm <?php echo ($controlador == 'index' && $accion == 'index') ? 'active' : '' ?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'index')); ?>">Inicio</a></li>
           <li><a class="waves-effect  btn btnm <?php echo ($controlador == 'index' && $accion == 'acerca') ? 'active' : '' ?>" href="<?php echo $this->url(array('controller' => 'index', 'action' => 'acerca')) ?>">Acerca</a></li>
       </ul><!-- Termina Barra de navegación -->
       <!-- Contenido de las vistas -->

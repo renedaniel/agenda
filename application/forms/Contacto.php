@@ -37,7 +37,12 @@ class Application_Form_Contacto extends Zend_Form
                     'messages' => 'El campo Nombre(s) sólo acepta letras y/o números',
                     'allowWhiteSpace' => true,
                 )),
-                
+                array('Db_NoRecordExists', true, array(
+                        'table' => 'contacto',
+                        'field' => 'contacto_nombres',
+                        'messages' => array(
+                            'recordFound' => 'Ya existe un contacto con este nombre'
+                ))),
             )
         ));   
         //Agregamos el input de los apellidos
@@ -63,7 +68,7 @@ class Application_Form_Contacto extends Zend_Form
                 
             )
         ));   
-        //Agregamos el input del nombre
+        //Agregamos el input del teléfono
         $this->addElement('text', 'contacto_telefono', array(
             'label'      => 'Teléfono:',
             'required'   => true,
@@ -72,6 +77,12 @@ class Application_Form_Contacto extends Zend_Form
                 array('NotEmpty', true, array('messages' => 'El campo Teléfono es obligatorio')),
                 array('Digits', true, array('messages' => 'El campo Teléfono sólo puede tener números')),
                 array('StringLength', true, array('messages' => 'El campo Teléfono debe contener almenos 10 caracteres', 'min' => 10)),
+                array('Db_NoRecordExists', true, array(
+                        'table' => 'contacto',
+                        'field' => 'contacto_telefono',
+                        'messages' => array(
+                            'recordFound' => 'Ya existe un contacto con este teléfono'
+                ))),
             )
         ));     	
     	//Agregamos el input del email
@@ -81,6 +92,12 @@ class Application_Form_Contacto extends Zend_Form
             'filters'    => array('StringTrim'),
             'validators' => array(
                 array('EmailAddress', true, array('messages' => 'Debe escribir un email válido')),
+                array('Db_NoRecordExists', true, array(
+                        'table' => 'contacto',
+                        'field' => 'contacto_correo',
+                        'messages' => array(
+                            'recordFound' => 'Ya existe un contacto con este correo'
+                ))),
             )
         ));  
 	
@@ -98,6 +115,30 @@ class Application_Form_Contacto extends Zend_Form
 			array('HtmlTag', array('tag' => 'div', 'class'=>'input-field col s12')),
 		));
 
+    }
+
+    /**
+     * Callback para ejecutar al momento de validar los datos
+     *
+     * @author René Daniel Galicia Vázquez <renedaniel191992@gmail.com>  
+     */
+    public function isValid($data) {
+        //Si se está actualizando un contacto, quitamos el validador de duplicados en los campos correspondientes
+        if (isset($data['contacto_id']) && !empty($data['contacto_id'])) {
+            //Campo nombres
+            $this->getElement('contacto_nombres')
+                ->getValidator('Db_NoRecordExists')
+                ->setExclude('contacto_id != ' . $data['contacto_id']);
+            //Campo teléfono
+            $this->getElement('contacto_telefono')
+                ->getValidator('Db_NoRecordExists')
+                ->setExclude('contacto_id != ' . $data['contacto_id']);
+            //Campo correo
+            $this->getElement('contacto_correo')
+                ->getValidator('Db_NoRecordExists')
+                ->setExclude('contacto_id != ' . $data['contacto_id']);
+        }
+        return parent::isValid($data);
     }
 
 }
