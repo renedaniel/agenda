@@ -20,7 +20,7 @@ class Application_Form_Contacto extends Zend_Form
     		'id' => 'formularioContacto',
     		'class' => 'col s12'
     	));
-        //Agregamos el input del nombre
+        //Agregamos el input oculto para el id
         $this->addElement('hidden', 'contacto_id', array(
             'label'      => false,
             'required'   => false,
@@ -33,6 +33,10 @@ class Application_Form_Contacto extends Zend_Form
             'filters'    => array('StringTrim'),
             'validators' => array(
                 array('NotEmpty', true, array('messages' => 'El campo Nombre(s) es obligatorio')),
+                array('Alnum', true, array(
+                    'messages' => 'El campo Nombre(s) sólo acepta letras y/o números',
+                    'allowWhiteSpace' => true,
+                )),
                 
             )
         ));   
@@ -49,7 +53,7 @@ class Application_Form_Contacto extends Zend_Form
                 
             )
         ));   
-        //Agregamos el input del nombre
+        //Agregamos el input de la dirección
         $this->addElement('text', 'contacto_direccion', array(
             'label'      => 'Dirección:',
             'required'   => true,
@@ -66,7 +70,8 @@ class Application_Form_Contacto extends Zend_Form
             'filters'    => array('StringTrim'),
             'validators' => array(
                 array('NotEmpty', true, array('messages' => 'El campo Teléfono es obligatorio')),
-                
+                array('Digits', true, array('messages' => 'El campo Teléfono sólo puede tener números')),
+                array('StringLength', true, array('messages' => 'El campo Teléfono debe contener almenos 10 caracteres', 'min' => 10)),
             )
         ));     	
     	//Agregamos el input del email

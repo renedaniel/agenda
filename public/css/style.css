@@ -128,7 +128,7 @@ label.required:after {
   background-color: #212121 !important;
 }
 
-#detalleContacto {
+#detalleContacto, #acerca {
   font-family: 'Fjalla One', sans-serif;
 }
 
@@ -333,6 +333,30 @@ html, body {
 #return-to-top:hover i {
     color: #fff;
     top: 5px;
+}
+
+@media only screen and (max-width : 460px) {
+  #logo-container img{
+    height: 75px;
+  }
+  #menuNavegacion, .navbar-fixed {
+    height: 80px;
+  }
+}
+
+table.dataTable tbody td {
+    padding: 11px 10px !important;
+}
+
+table.dataTable.no-footer {
+    border-bottom: none !important;
+}
+
+.modal { 
+  width: 95% !important ; 
+  height: 80% !important;
+  max-height: 100% !important ; 
+  overflow-y: hidden !important ;
 }
 
 body{background: #eee ;font-family: 'Open Sans', sans-serif;}h3{font-size: 30px; font-weight: 400;text-align: center;margin-top: 50px;}h3 i{color: #444;}

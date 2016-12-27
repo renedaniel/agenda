@@ -27,6 +27,9 @@
     template += '<div class="input-field col s6 lef-align">';
     template += '<button class="btn-large btnd" type="submit">&nbsp;&nbsp;Enviar&nbsp;&nbsp;</button></div></div>';
 
+    //Modoficamos el tipo de input del teléfono para que en móviles se vea mejor
+    $('#contacto_telefono').attr('type', 'tel');
+
     formularioContacto.append(template);
     //Nos aseguramos de reiniciar los labels por si se está editando el formulario
     Materialize.updateTextFields();

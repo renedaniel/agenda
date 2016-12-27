@@ -5,7 +5,7 @@
     <br><br>
 </div>
 <!-- Tabla con la bandeja de contactos -->
-<div id="bandejaContactos" hidden>
+<div id="bandejaContactos">
    <table id="bandeja" class="display responsive-table" cellspacing="0" width="100%">
       <thead>
          <tr>
@@ -52,7 +52,7 @@
             success: function(data, textStatus, request) {
                 //Generamos una tabla para mostrar los datos en el modal
                 var html = '<h3 class="titulo-seccion"> Contacto </h3>';
-                html += '<table id="detalleContacto" class="display responsive-table striped" cellspacing="0" width="100%"><tbody>';
+                html += '<table id="detalleContacto" class="display striped" cellspacing="0" width="100%"><tbody>';
                 var diccionario = data['diccionario'];
                 //Iteramos sobre los valores para hacerlo dinámico
                 $.each(data.valores, function( index, value ) {
@@ -69,6 +69,7 @@
                 btnCerrar += '</div>';
                 html += btnCerrar;
                 modalContenido.html(html);
+                modal.modal('open');
             }
         });
     }
@@ -162,8 +163,8 @@
                 { "data": null },
             ],
     		"columnDefs": [
-    			{ "orderable": false, "targets": [0, 1, 2] },
-    			{ "searchable": false, "targets": [0, 1, 2] }
+    			{ "orderable": false, "targets": [2] },
+    			{ "searchable": false, "targets": [2] }
     		],
     		"bLengthChange": false,
     		"order": [],
@@ -224,11 +225,17 @@
         } );
 
     	//Activamos los tooltip
-    	bandeja.on( 'draw.dt', function () {
+    	bandeja.on('draw.dt', function () {
     	    $('.tooltipped').tooltip({delay: 50});
     	} );
 
         //Activamos los modales
         modal.modal();
+        modal.on('closeModal', function () {
+            $('.tooltipped').tooltip({delay: 50});
+        } );
+        modal.on('openModal', function () {
+            $('.tooltipped').tooltip('remove');
+        } );
     });
 </script>
